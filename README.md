@@ -1,1 +1,2 @@
-# Feastival-Android
+# Feastival.android
+Feastival.android
