@@ -11,4 +11,11 @@
     <string name="request_permission_dialog_message">We want to access to your location to show
         your current position</string>
     <string name="permission_denied">PERMISSION_DENIED</string>
+    <string name="title_remember_me">Remember Me</string>
+    <string name="title_login">Login</string>
+    <string name="action_forgot_password">Forgot password</string>
+    <string name="title_slash">\t/\t</string>
+    <string name="title_register">Register</string>
+    <string name="title_phone_or_email">Phone or Email</string>
+    <string name="title_pass_word">Password</string>
 </resources>

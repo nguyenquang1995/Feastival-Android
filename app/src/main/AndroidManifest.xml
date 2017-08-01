@@ -18,6 +18,11 @@
         <activity
             android:name=".screen.main.MainActivity"
             android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".screen.login.LoginActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
