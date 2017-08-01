@@ -1,6 +1,7 @@
 package com.framgia.feastival.data.source;
 
 import com.framgia.feastival.data.source.model.RestaurantsResponse;
+import com.google.android.gms.maps.model.LatLng;
 
 import io.reactivex.Observable;
 
@@ -9,4 +10,5 @@ import io.reactivex.Observable;
  */
 public interface RestaurantDataSource {
     Observable<RestaurantsResponse> getRestaurants();
+    Observable<RestaurantsResponse> getRestaurants(LatLng location, double radius);
 }

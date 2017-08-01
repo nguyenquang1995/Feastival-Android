@@ -4,6 +4,7 @@ import com.framgia.feastival.data.source.model.RestaurantsResponse;
 import com.framgia.feastival.screen.BasePresenter;
 import com.framgia.feastival.screen.BaseViewModel;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
 
 /**
  * This specifies the contract between the view and the presenter.
@@ -23,5 +24,6 @@ interface MainContract {
      */
     interface Presenter extends BasePresenter {
         void getRestaurants();
+        void getRestaurants(LatLng location, double radius);
     }
 }
