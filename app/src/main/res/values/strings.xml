@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Feastival</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
+        AIzaSyC4Ok_DgRWAg1YnU8sMNKWum6bcbuwfvkk
+    </string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+    <string name="loading_map_dialog_title">Notification</string>
+    <string name="loading_map_dialog_message">Map is loading, please wait in few minute</string>
+    <string name="request_permission_dialog_title">Request access location permission</string>
+    <string name="request_permission_dialog_message">We want to access to your location to show
+        your current position</string>
+    <string name="permission_denied">PERMISSION_DENIED</string>
+</resources>
