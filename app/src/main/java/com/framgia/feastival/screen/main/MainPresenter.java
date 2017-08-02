@@ -1,5 +1,7 @@
 package com.framgia.feastival.screen.main;
 
+import android.location.Location;
+
 import com.framgia.feastival.data.source.RestaurantDataSource;
 import com.framgia.feastival.data.source.model.RestaurantsResponse;
 import com.google.android.gms.maps.model.LatLng;
@@ -61,7 +63,7 @@ final class MainPresenter implements MainContract.Presenter {
     }
 
     @Override
-    public void getRestaurants(LatLng location, double radius) {
+    public void getRestaurants(final LatLng location, final double radius) {
         Disposable disposable = mRestaurantRepository.getRestaurants(location, radius)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -81,5 +83,16 @@ final class MainPresenter implements MainContract.Presenter {
                 }
             });
         mCompositeDisposable.add(disposable);
+    }
+
+    @Override
+    public double getDistance(LatLng latLngA, LatLng latLngB) {
+        Location locationA = new Location("");
+        locationA.setLatitude(latLngA.latitude);
+        locationA.setLongitude(latLngA.longitude);
+        Location locationB = new Location("");
+        locationB.setLatitude(latLngB.latitude);
+        locationB.setLongitude(latLngB.longitude);
+        return locationA.distanceTo(locationB);
     }
 }
