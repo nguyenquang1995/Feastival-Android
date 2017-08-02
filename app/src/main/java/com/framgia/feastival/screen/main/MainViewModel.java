@@ -42,6 +42,10 @@ public class MainViewModel implements MainContract.ViewModel, OnMapReadyCallback
     private static final String MARKER_RESIZE = "MARKER_RESIZE";
     private static final String MARKER_RESTAURANT = "MARKER_RESTAURANT";
     private static final String MARKER_GROUP = "MARKER_GROUP";
+    public static final String STATE_SHOW_RESTAURANT_DETAIL = "STATE_SHOW_RESTAURANT_DETAIL";
+    public static final String STATE_SHOW_GROUP_DETAIL = "STATE_SHOW_GROUP_DETAIL";
+    public static final String STATE_CREATE_GROUP = "STATE_CREATE_GROUP";
+    private ObservableField<String> mState;
     private static final double RADIUS = 1000;
     private Context mContext;
     private MainContract.Presenter mPresenter;
@@ -69,8 +73,23 @@ public class MainViewModel implements MainContract.ViewModel, OnMapReadyCallback
         mContext = context;
         mRestaurantsMarker = new ArrayList<>();
         mViewPointMarker = new ArrayList<>();
+        mState = new ObservableField<>();
+        mState.set(STATE_SHOW_RESTAURANT_DETAIL);
         mSelectedRestaurant = new ObservableField<>();
         mSelectedRestaurant.set(new Restaurant());
+    }
+
+    public Context getContext() {
+        return mContext;
+    }
+
+    public ObservableField<String> getState() {
+        return mState;
+    }
+
+    public void setState(ObservableField<String> state) {
+        mState = state;
+        mState.notifyChange();
     }
 
     private void zoomInMyPositonAutomaticly() {
