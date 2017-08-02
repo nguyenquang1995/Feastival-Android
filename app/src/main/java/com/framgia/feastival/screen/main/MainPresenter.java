@@ -2,6 +2,7 @@ package com.framgia.feastival.screen.main;
 
 import com.framgia.feastival.data.source.RestaurantDataSource;
 import com.framgia.feastival.data.source.model.RestaurantsResponse;
+import com.google.android.gms.maps.model.LatLng;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
@@ -39,6 +40,29 @@ final class MainPresenter implements MainContract.Presenter {
     @Override
     public void getRestaurants() {
         Disposable disposable = mRestaurantRepository.getRestaurants()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeWith(new DisposableObserver<RestaurantsResponse>() {
+                @Override
+                public void onNext(@NonNull RestaurantsResponse response) {
+                    mViewModel.onGetRestaurantsSuccess(response);
+                }
+
+                @Override
+                public void onError(@NonNull Throwable e) {
+                    mViewModel.onGetRestaurantsFailed(e);
+                }
+
+                @Override
+                public void onComplete() {
+                }
+            });
+        mCompositeDisposable.add(disposable);
+    }
+
+    @Override
+    public void getRestaurants(LatLng location, double radius) {
+        Disposable disposable = mRestaurantRepository.getRestaurants(location, radius)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeWith(new DisposableObserver<RestaurantsResponse>() {

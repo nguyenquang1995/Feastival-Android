@@ -4,12 +4,18 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.TypedArray;
+import android.databinding.ObservableField;
 import android.location.Location;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityCompat;
+import android.view.View;
 
 import com.framgia.feastival.R;
 import com.framgia.feastival.data.source.model.Restaurant;
 import com.framgia.feastival.data.source.model.RestaurantsResponse;
+import com.framgia.feastival.screen.BaseActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -36,7 +42,7 @@ public class MainViewModel implements MainContract.ViewModel, OnMapReadyCallback
     private static final String MARKER_RESIZE = "MARKER_RESIZE";
     private static final String MARKER_RESTAURANT = "MARKER_RESTAURANT";
     private static final String MARKER_GROUP = "MARKER_GROUP";
-    private static final double mRadius = 600;
+    private static final double RADIUS = 1000;
     private Context mContext;
     private MainContract.Presenter mPresenter;
     private SupportMapFragment mMapFragment;
@@ -47,6 +53,9 @@ public class MainViewModel implements MainContract.ViewModel, OnMapReadyCallback
     private Marker mMarkerMyLocation;
     private boolean isNeedInMyLocation;
     private ProgressDialog mProgressDialog;
+    private BottomSheetBehavior<View> mBottomSheetBehavior;
+    private View mBottomSheet;
+    private ObservableField<Restaurant> mSelectedRestaurant;
     private GoogleMap.OnMyLocationChangeListener mMyLocationChangeListener =
         new GoogleMap.OnMyLocationChangeListener() {
             @Override
@@ -60,6 +69,8 @@ public class MainViewModel implements MainContract.ViewModel, OnMapReadyCallback
         mContext = context;
         mRestaurantsMarker = new ArrayList<>();
         mViewPointMarker = new ArrayList<>();
+        mSelectedRestaurant = new ObservableField<>();
+        mSelectedRestaurant.set(new Restaurant());
     }
 
     private void zoomInMyPositonAutomaticly() {
@@ -118,7 +129,7 @@ public class MainViewModel implements MainContract.ViewModel, OnMapReadyCallback
     private Circle drawCircle(Marker viewPoint) {
         if (mMap == null) return null;
         Circle circle = (Circle) viewPoint.getTag();
-        double radius = mRadius;
+        double radius = RADIUS;
         if (circle != null) {
             radius = circle.getRadius();
             circle.remove();
@@ -129,6 +140,7 @@ public class MainViewModel implements MainContract.ViewModel, OnMapReadyCallback
             .radius(radius)
             .strokeWidth(2)
             .strokeColor(mContext.getResources().getColor(R.color.color_red_accent_200)));
+        mPresenter.getRestaurants(viewPoint.getPosition(), radius);
         circle.setTag(drawResizeMarker(viewPoint, circle));
         return circle;
     }
@@ -143,6 +155,7 @@ public class MainViewModel implements MainContract.ViewModel, OnMapReadyCallback
             .position(SphericalUtil.computeOffset(circle.getCenter(), circle.getRadius(), 90))
             .snippet(MARKER_RESIZE)
             .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_resize_circle)));
+        marker.setVisible(false);
         marker.setTag(viewPoint);
         marker.setDraggable(true);
         return marker;
@@ -177,7 +190,8 @@ public class MainViewModel implements MainContract.ViewModel, OnMapReadyCallback
         for (Restaurant restaurant : restaurantsResponse.getList()) {
             Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(new LatLng(restaurant.getLatitude(), restaurant.getLongtitude()))
-                .title(String.valueOf(restaurant.getId())));
+                .title(String.valueOf(restaurant.getId()))
+                .snippet(MARKER_RESTAURANT + restaurant.getId()));
             marker.setTag(restaurant);
             mRestaurantsMarker.add(marker);
         }
@@ -193,10 +207,55 @@ public class MainViewModel implements MainContract.ViewModel, OnMapReadyCallback
         return locationA.distanceTo(locationB);
     }
 
+    private void createBottomSheet() {
+        mBottomSheet = ((BaseActivity) mContext).findViewById(R.id.bottom_sheet);
+        mBottomSheetBehavior = BottomSheetBehavior.from(mBottomSheet);
+        mBottomSheetBehavior.setHideable(true);
+        final TypedArray styledAttributes = mContext.getTheme().obtainStyledAttributes(
+            new int[]{android.R.attr.actionBarSize});
+        mBottomSheetBehavior.setPeekHeight((int) styledAttributes.getDimension(0, 0));
+        styledAttributes.recycle();
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED:
+                        break;
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+            }
+        });
+    }
+
+    public ObservableField<Restaurant> getSelectedRestaurant() {
+        return mSelectedRestaurant;
+    }
+
+    public void setSelectedRestaurant(
+        ObservableField<Restaurant> selectedRestaurant) {
+        mSelectedRestaurant = selectedRestaurant;
+    }
+
+    public void setSelectedRestaurant(Marker marker) {
+        int restaurantId = Integer.parseInt(marker.getSnippet().replace(MARKER_RESTAURANT, ""));
+        Restaurant restaurant =
+            ((Restaurant) mRestaurantsMarker.get(restaurantId - 1).getTag());
+        mSelectedRestaurant.set(restaurant);
+        mSelectedRestaurant.notifyChange();
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    }
+
     @Override
     public void onStart() {
         mMapFragment.getMapAsync(this);
         mPresenter.onStart();
+        createBottomSheet();
     }
 
     @Override
@@ -255,14 +314,19 @@ public class MainViewModel implements MainContract.ViewModel, OnMapReadyCallback
             double newRadious =
                 getDistance(viewPoint.getPosition(), marker.getPosition());
             updateCircle(viewPoint, newRadious);
-        } else if (marker.getSnippet().equals(MARKER_VIEW_POINT)) {
+            return;
+        }
+        if (marker.getSnippet().equals(MARKER_VIEW_POINT)) {
             updateCircle(marker);
         }
     }
 
     @Override
     public void onMarkerDragEnd(Marker marker) {
-        // TODO: 29/07/2017
+        if (marker.getSnippet().equals(MARKER_VIEW_POINT)) {
+            ((Marker) ((Circle) marker.getTag()).getTag()).setVisible(true);
+            return;
+        }
     }
 
     @Override
@@ -275,6 +339,10 @@ public class MainViewModel implements MainContract.ViewModel, OnMapReadyCallback
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+        if (marker.getSnippet().contains(MARKER_RESTAURANT)) {
+            setSelectedRestaurant(marker);
+            return true;
+        }
         if (marker.getSnippet().equals(MARKER_VIEW_POINT)) {
             ((Marker) ((Circle) marker.getTag()).getTag()).setVisible(true);
             marker

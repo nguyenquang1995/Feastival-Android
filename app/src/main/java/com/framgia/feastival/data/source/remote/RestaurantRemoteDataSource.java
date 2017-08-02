@@ -1,9 +1,10 @@
 package com.framgia.feastival.data.source.remote;
 
-import com.framgia.feastival.data.source.RestaurantDataSource;
-import com.framgia.feastival.data.source.model.RestaurantsResponse;
 import com.framgia.feastival.data.service.FeastivalService;
 import com.framgia.feastival.data.service.ServiceGenerator;
+import com.framgia.feastival.data.source.RestaurantDataSource;
+import com.framgia.feastival.data.source.model.RestaurantsResponse;
+import com.google.android.gms.maps.model.LatLng;
 
 import io.reactivex.Observable;
 
@@ -20,5 +21,11 @@ public class RestaurantRemoteDataSource implements RestaurantDataSource {
     @Override
     public Observable<RestaurantsResponse> getRestaurants() {
         return mService.getRestaurants();
+    }
+
+    @Override
+    public Observable<RestaurantsResponse> getRestaurants(LatLng location, double radius) {
+        return mService
+            .getRestaurants((float) location.latitude, (float) location.longitude, (float) radius);
     }
 }
