@@ -10,9 +10,9 @@ import retrofit2.http.Query;
  * Created by tmd on 19/07/2017.
  */
 public interface FeastivalService {
-    @GET("restaurants")
+    @GET("groups")
     Observable<RestaurantsResponse> getRestaurants();
-    @GET("restaurants")
+    @GET("groups")
     Observable<RestaurantsResponse> getRestaurants(@Query("lat") float lat,
                                                    @Query("lng") float lng,
                                                    @Query("distance") float distance);
