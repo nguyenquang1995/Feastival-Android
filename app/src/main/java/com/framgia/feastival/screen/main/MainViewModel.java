@@ -75,7 +75,7 @@ public class MainViewModel implements MainContract.ViewModel, OnMapReadyCallback
 
     private void zoomInMyPositonAutomaticly() {
         if (mMap != null && isNeedInMyLocation) {
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mMyLocation, 14));// 0-18
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mMyLocation, 14));
             markMyLocation(mMyLocation);
             isNeedInMyLocation = false;
         }
@@ -197,16 +197,6 @@ public class MainViewModel implements MainContract.ViewModel, OnMapReadyCallback
         }
     }
 
-    private double getDistance(LatLng latLngA, LatLng latLngB) {
-        Location locationA = new Location("");
-        locationA.setLatitude(latLngA.latitude);
-        locationA.setLongitude(latLngA.longitude);
-        Location locationB = new Location("");
-        locationB.setLatitude(latLngB.latitude);
-        locationB.setLongitude(latLngB.longitude);
-        return locationA.distanceTo(locationB);
-    }
-
     private void createBottomSheet() {
         mBottomSheet = ((BaseActivity) mContext).findViewById(R.id.bottom_sheet);
         mBottomSheetBehavior = BottomSheetBehavior.from(mBottomSheet);
@@ -244,9 +234,7 @@ public class MainViewModel implements MainContract.ViewModel, OnMapReadyCallback
 
     public void setSelectedRestaurant(Marker marker) {
         int restaurantId = Integer.parseInt(marker.getSnippet().replace(MARKER_RESTAURANT, ""));
-        Restaurant restaurant =
-            ((Restaurant) mRestaurantsMarker.get(restaurantId - 1).getTag());
-        mSelectedRestaurant.set(restaurant);
+        mSelectedRestaurant.set((Restaurant) marker.getTag());
         mSelectedRestaurant.notifyChange();
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
@@ -296,7 +284,6 @@ public class MainViewModel implements MainContract.ViewModel, OnMapReadyCallback
     public void onMapLoaded() {
         mProgressDialog.dismiss();
         getMyLocation();
-        mPresenter.getRestaurants();
     }
 
     @Override
@@ -311,9 +298,9 @@ public class MainViewModel implements MainContract.ViewModel, OnMapReadyCallback
     public void onMarkerDrag(Marker marker) {
         if (marker.getSnippet().equals(MARKER_RESIZE)) {
             Marker viewPoint = (Marker) marker.getTag();
-            double newRadious =
-                getDistance(viewPoint.getPosition(), marker.getPosition());
-            updateCircle(viewPoint, newRadious);
+            double newRadius =
+                mPresenter.getDistance(viewPoint.getPosition(), marker.getPosition());
+            updateCircle(viewPoint, newRadius);
             return;
         }
         if (marker.getSnippet().equals(MARKER_VIEW_POINT)) {
@@ -325,6 +312,13 @@ public class MainViewModel implements MainContract.ViewModel, OnMapReadyCallback
     public void onMarkerDragEnd(Marker marker) {
         if (marker.getSnippet().equals(MARKER_VIEW_POINT)) {
             ((Marker) ((Circle) marker.getTag()).getTag()).setVisible(true);
+            mPresenter.getRestaurants(marker.getPosition(), ((Circle) marker.getTag()).getRadius());
+            return;
+        }
+        if (marker.getSnippet().equals(MARKER_RESIZE)) {
+            Marker viewPoint = (Marker) marker.getTag();
+            double radius = ((Circle) viewPoint.getTag()).getRadius();
+            mPresenter.getRestaurants(viewPoint.getPosition(), radius);
             return;
         }
     }

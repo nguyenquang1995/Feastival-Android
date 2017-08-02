@@ -25,5 +25,6 @@ interface MainContract {
     interface Presenter extends BasePresenter {
         void getRestaurants();
         void getRestaurants(LatLng location, double radius);
+        double getDistance(LatLng latLngA, LatLng latLngB);
     }
 }

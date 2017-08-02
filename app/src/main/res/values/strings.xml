@@ -18,4 +18,5 @@
     <string name="title_register">Register</string>
     <string name="title_phone_or_email">Phone or Email</string>
     <string name="title_pass_word">Password</string>
+    <string name="content_description">contentDescription</string>
 </resources>
