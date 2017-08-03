@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityCompat;
 import android.view.View;
 
 import com.framgia.feastival.R;
+import com.framgia.feastival.data.source.model.Group;
 import com.framgia.feastival.data.source.model.Restaurant;
 import com.framgia.feastival.data.source.model.RestaurantsResponse;
 import com.framgia.feastival.screen.BaseActivity;
@@ -54,6 +55,7 @@ public class MainViewModel extends BaseObservable
     private SupportMapFragment mMapFragment;
     private GoogleMap mMap;
     private List<Marker> mRestaurantsMarker;
+    private List<Marker> mGroupsMarker;
     private List<Marker> mViewPointMarker;
     private LatLng mMyLocation;
     private Marker mMarkerMyLocation;
@@ -84,6 +86,7 @@ public class MainViewModel extends BaseObservable
     public MainViewModel(Context context) {
         mContext = context;
         mRestaurantsMarker = new ArrayList<>();
+        mGroupsMarker = new ArrayList<>();
         mViewPointMarker = new ArrayList<>();
         setState(STATE_SHOW_RESTAURANT_DETAIL);
     }
@@ -226,13 +229,27 @@ public class MainViewModel extends BaseObservable
 
     private void markNearbyRestaurants(RestaurantsResponse restaurantsResponse) {
         mRestaurantsMarker.clear();
-        for (Restaurant restaurant : restaurantsResponse.getList()) {
+        for (Restaurant restaurant : restaurantsResponse.getRestaurants()) {
             Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(new LatLng(restaurant.getLatitude(), restaurant.getLongtitude()))
+                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_restaurant))
                 .title(String.valueOf(restaurant.getId()))
                 .snippet(MARKER_RESTAURANT + restaurant.getId()));
             marker.setTag(restaurant);
             mRestaurantsMarker.add(marker);
+        }
+    }
+
+    private void markNearbyGroups(RestaurantsResponse restaurantsResponse) {
+        mGroupsMarker.clear();
+        for (Group group : restaurantsResponse.getGroups()) {
+            Marker marker = mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(group.getLatitude(), group.getLongtitude()))
+                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_group))
+                .title(String.valueOf(group.getId()))
+                .snippet(MARKER_GROUP + group.getId()));
+            marker.setTag(group);
+            mGroupsMarker.add(marker);
         }
     }
 
@@ -304,6 +321,7 @@ public class MainViewModel extends BaseObservable
     @Override
     public void onGetRestaurantsSuccess(RestaurantsResponse restaurantsResponse) {
         markNearbyRestaurants(restaurantsResponse);
+        markNearbyGroups(restaurantsResponse);
     }
 
     @Override
