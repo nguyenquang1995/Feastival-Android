@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.framgia.feastival.R;
+import com.framgia.feastival.databinding.FrameGroupCreateBinding;
 import com.framgia.feastival.databinding.FrameRestaurantDetailBinding;
 import com.framgia.feastival.screen.main.MainViewModel;
 
@@ -37,7 +38,7 @@ public class BindingUtil {
         View mView;
         rootLiear.removeAllViews();
         LayoutInflater layoutInflater = LayoutInflater.from(mainViewModel.getContext());
-        switch (mainViewModel.getState().get()) {
+        switch (mainViewModel.getState()) {
             case STATE_SHOW_RESTAURANT_DETAIL:
                 FrameRestaurantDetailBinding restaurantDetailBinding =
                     DataBindingUtil.inflate(layoutInflater, R.layout
@@ -47,7 +48,12 @@ public class BindingUtil {
                 rootLiear.addView(mView, mParams);
                 break;
             case STATE_CREATE_GROUP:
-                // TODO: 02/08/2017
+                FrameGroupCreateBinding createGroupBinding =
+                    DataBindingUtil.inflate(layoutInflater, R.layout
+                        .frame_group_create, rootLiear, false);
+                createGroupBinding.setViewModel(mainViewModel.getCreateGroupViewModel());
+                mView = createGroupBinding.getRoot();
+                rootLiear.addView(mView, mParams);
                 break;
             case STATE_SHOW_GROUP_DETAIL:
                 // TODO: 02/08/2017
