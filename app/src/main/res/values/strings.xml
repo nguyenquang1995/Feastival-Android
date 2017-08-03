@@ -20,4 +20,5 @@
     <string name="title_pass_word">Password</string>
     <string name="content_description">contentDescription</string>
     <string name="title_enter_message">Enter message</string>
+    <string name="groups">Groups</string>
 </resources>

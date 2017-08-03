@@ -2,40 +2,40 @@ package com.framgia.feastival.data.source.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 /**
- * Created by tmd on 27/07/2017.
+ * Created by tmd on 01/08/2017.
  */
-public class Restaurant {
+public class Group {
     @SerializedName("id")
     private int mId;
     @SerializedName("category_id")
     private int mCategoryId;
-    @SerializedName("manager_id")
-    private int mManagerId;
+    @SerializedName("restaurant_id")
+    private int mRestaurantId;
+    @SerializedName("creator_id")
+    private int mCreatorId;
     @SerializedName("title")
     private String mTitle;
+    @SerializedName("time")
+    private String mTime;
     @SerializedName("address")
     private String mAddress;
     @SerializedName("latitude")
     private float mLatitude;
     @SerializedName("longitude")
     private float mLongtitude;
+    @SerializedName("size")
+    private int mSize;
+    @SerializedName("status")
+    private boolean mStatus;
+    @SerializedName("completed")
+    private boolean mCompleted;
     @SerializedName("description")
     private String mDescription;
-    @SerializedName("phonenumber")
-    private String mPhoneNumber;
-    @SerializedName("website")
-    private String mWebsite;
-    @SerializedName("is_approved")
-    private boolean mIsApproved;
     @SerializedName("created_at")
     private String mCreatedAt;
     @SerializedName("updated_at")
     private String mUpdateAt;
-    @SerializedName("groups")
-    private List<Group> mGroups;
 
     public int getId() {
         return mId;
@@ -45,12 +45,20 @@ public class Restaurant {
         return mCategoryId;
     }
 
-    public int getManagerId() {
-        return mManagerId;
+    public int getRestaurantId() {
+        return mRestaurantId;
+    }
+
+    public int getCreatorId() {
+        return mCreatorId;
     }
 
     public String getTitle() {
         return mTitle;
+    }
+
+    public String getTime() {
+        return mTime;
     }
 
     public String getAddress() {
@@ -65,20 +73,20 @@ public class Restaurant {
         return mLongtitude;
     }
 
+    public int getSize() {
+        return mSize;
+    }
+
+    public boolean isStatus() {
+        return mStatus;
+    }
+
+    public boolean isCompleted() {
+        return mCompleted;
+    }
+
     public String getDescription() {
         return mDescription;
-    }
-
-    public String getPhoneNumber() {
-        return mPhoneNumber;
-    }
-
-    public String getWebsite() {
-        return mWebsite;
-    }
-
-    public boolean isApproved() {
-        return mIsApproved;
     }
 
     public String getCreatedAt() {
@@ -87,23 +95,5 @@ public class Restaurant {
 
     public String getUpdateAt() {
         return mUpdateAt;
-    }
-
-    public List<Group> getGroups() {
-        return mGroups;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (mLatitude == ((Restaurant) obj).getLatitude()
-            && mLongtitude == ((Restaurant) obj).getLongtitude()) {
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return 0;
     }
 }

@@ -9,7 +9,7 @@ import com.google.android.gms.maps.model.LatLng;
 /**
  * This specifies the contract between the view and the presenter.
  */
-interface MainContract {
+public interface MainContract {
     /**
      * View.
      */
