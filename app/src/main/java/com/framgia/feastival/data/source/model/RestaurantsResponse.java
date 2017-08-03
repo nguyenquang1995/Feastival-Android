@@ -9,9 +9,15 @@ import java.util.List;
  */
 public class RestaurantsResponse {
     @SerializedName("restaurants")
-    private List<Restaurant> mList;
+    private List<Restaurant> mRestaurants;
+    @SerializedName("groups")
+    private List<Group> mGroups;
 
-    public List<Restaurant> getList() {
-        return mList;
+    public List<Restaurant> getRestaurants() {
+        return mRestaurants;
+    }
+
+    public List<Group> getGroups() {
+        return mGroups;
     }
 }
