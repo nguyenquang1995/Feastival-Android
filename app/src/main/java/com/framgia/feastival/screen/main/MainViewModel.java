@@ -5,7 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
-import android.databinding.ObservableField;
+import android.databinding.BaseObservable;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -16,6 +16,7 @@ import com.framgia.feastival.R;
 import com.framgia.feastival.data.source.model.Restaurant;
 import com.framgia.feastival.data.source.model.RestaurantsResponse;
 import com.framgia.feastival.screen.BaseActivity;
+import com.framgia.feastival.screen.main.creategroup.CreateGroupViewModel;
 import com.framgia.feastival.screen.main.restaurantdetail.RestaurantDetailViewModel;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -35,9 +36,9 @@ import java.util.List;
 /**
  * Exposes the data to be used in the Main screen.
  */
-public class MainViewModel implements MainContract.ViewModel, OnMapReadyCallback,
-    GoogleMap.OnMapLoadedCallback, GoogleMap.OnMarkerDragListener, GoogleMap.OnMapClickListener,
-    GoogleMap.OnMarkerClickListener {
+public class MainViewModel extends BaseObservable
+    implements MainContract.ViewModel, OnMapReadyCallback, GoogleMap.OnMapLoadedCallback,
+    GoogleMap.OnMarkerDragListener, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener {
     private static final String TAG = MainViewModel.class.getName();
     private static final String MARKER_VIEW_POINT = "MARKER_VIEW_POINT";
     private static final String MARKER_RESIZE = "MARKER_RESIZE";
@@ -46,8 +47,8 @@ public class MainViewModel implements MainContract.ViewModel, OnMapReadyCallback
     public static final String STATE_SHOW_RESTAURANT_DETAIL = "STATE_SHOW_RESTAURANT_DETAIL";
     public static final String STATE_SHOW_GROUP_DETAIL = "STATE_SHOW_GROUP_DETAIL";
     public static final String STATE_CREATE_GROUP = "STATE_CREATE_GROUP";
-    private ObservableField<String> mState;
-    private static final double RADIUS = 1000;
+    private String mState;
+    private static final double RADIUS = 2000;
     private Context mContext;
     private MainContract.Presenter mPresenter;
     private SupportMapFragment mMapFragment;
@@ -60,7 +61,6 @@ public class MainViewModel implements MainContract.ViewModel, OnMapReadyCallback
     private ProgressDialog mProgressDialog;
     private BottomSheetBehavior<View> mBottomSheetBehavior;
     private View mBottomSheet;
-    private ObservableField<Restaurant> mSelectedRestaurant;
     private GoogleMap.OnMyLocationChangeListener mMyLocationChangeListener =
         new GoogleMap.OnMyLocationChangeListener() {
             @Override
@@ -71,32 +71,46 @@ public class MainViewModel implements MainContract.ViewModel, OnMapReadyCallback
         };
     private RestaurantDetailViewModel mRestaurantDetailViewModel =
         new RestaurantDetailViewModel(this);
+    private CreateGroupViewModel mCreateGroupViewModel = new CreateGroupViewModel(this);
+
+    public RestaurantDetailViewModel getRestaurantDetailViewModel() {
+        return mRestaurantDetailViewModel;
+    }
+
+    public CreateGroupViewModel getCreateGroupViewModel() {
+        return mCreateGroupViewModel;
+    }
 
     public MainViewModel(Context context) {
         mContext = context;
         mRestaurantsMarker = new ArrayList<>();
         mViewPointMarker = new ArrayList<>();
-        mState = new ObservableField<>();
-        mState.set(STATE_SHOW_RESTAURANT_DETAIL);
-        mSelectedRestaurant = new ObservableField<>();
-        mSelectedRestaurant.set(new Restaurant());
+        setState(STATE_SHOW_RESTAURANT_DETAIL);
     }
 
     public Context getContext() {
         return mContext;
     }
 
-    public ObservableField<String> getState() {
+    public String getState() {
         return mState;
     }
 
-    public void setState(ObservableField<String> state) {
+    public void setState(String state) {
+        switch (state) {
+            case STATE_SHOW_RESTAURANT_DETAIL:
+                break;
+            case STATE_SHOW_GROUP_DETAIL:
+                break;
+            case STATE_CREATE_GROUP:
+                mCreateGroupViewModel
+                    .setSelectedRestaurant(mRestaurantDetailViewModel.getSelectedRestaurant());
+                break;
+            default:
+                break;
+        }
         mState = state;
-        mState.notifyChange();
-    }
-
-    public RestaurantDetailViewModel getRestaurantDetailViewModel() {
-        return mRestaurantDetailViewModel;
+        notifyChange();
     }
 
     private void zoomInMyPositonAutomaticly() {
@@ -246,10 +260,6 @@ public class MainViewModel implements MainContract.ViewModel, OnMapReadyCallback
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
             }
         });
-    }
-
-    public ObservableField<Restaurant> getSelectedRestaurant() {
-        return mSelectedRestaurant;
     }
 
     public void setSelectedRestaurant(Marker marker) {
