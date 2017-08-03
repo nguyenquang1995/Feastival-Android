@@ -1,12 +1,16 @@
 package com.framgia.feastival.util;
 
 import android.databinding.BindingAdapter;
+
+import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.framgia.feastival.R;
+import com.framgia.feastival.databinding.FrameRestaurantDetailBinding;
 import com.framgia.feastival.screen.main.MainViewModel;
 
 import static com.framgia.feastival.screen.main.MainViewModel.STATE_CREATE_GROUP;
@@ -35,7 +39,12 @@ public class BindingUtil {
         LayoutInflater layoutInflater = LayoutInflater.from(mainViewModel.getContext());
         switch (mainViewModel.getState().get()) {
             case STATE_SHOW_RESTAURANT_DETAIL:
-                // TODO: 02/08/2017
+                FrameRestaurantDetailBinding restaurantDetailBinding =
+                    DataBindingUtil.inflate(layoutInflater, R.layout
+                        .frame_restaurant_detail, rootLiear, false);
+                restaurantDetailBinding.setViewModel(mainViewModel.getRestaurantDetailViewModel());
+                mView = restaurantDetailBinding.getRoot();
+                rootLiear.addView(mView, mParams);
                 break;
             case STATE_CREATE_GROUP:
                 // TODO: 02/08/2017

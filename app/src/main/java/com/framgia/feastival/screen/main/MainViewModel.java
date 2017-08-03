@@ -16,6 +16,7 @@ import com.framgia.feastival.R;
 import com.framgia.feastival.data.source.model.Restaurant;
 import com.framgia.feastival.data.source.model.RestaurantsResponse;
 import com.framgia.feastival.screen.BaseActivity;
+import com.framgia.feastival.screen.main.restaurantdetail.RestaurantDetailViewModel;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -68,6 +69,8 @@ public class MainViewModel implements MainContract.ViewModel, OnMapReadyCallback
                 zoomInMyPositonAutomaticly();
             }
         };
+    private RestaurantDetailViewModel mRestaurantDetailViewModel =
+        new RestaurantDetailViewModel(this);
 
     public MainViewModel(Context context) {
         mContext = context;
@@ -90,6 +93,10 @@ public class MainViewModel implements MainContract.ViewModel, OnMapReadyCallback
     public void setState(ObservableField<String> state) {
         mState = state;
         mState.notifyChange();
+    }
+
+    public RestaurantDetailViewModel getRestaurantDetailViewModel() {
+        return mRestaurantDetailViewModel;
     }
 
     private void zoomInMyPositonAutomaticly() {
@@ -174,7 +181,6 @@ public class MainViewModel implements MainContract.ViewModel, OnMapReadyCallback
             .position(SphericalUtil.computeOffset(circle.getCenter(), circle.getRadius(), 90))
             .snippet(MARKER_RESIZE)
             .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_resize_circle)));
-        marker.setVisible(false);
         marker.setTag(viewPoint);
         marker.setDraggable(true);
         return marker;
@@ -246,16 +252,11 @@ public class MainViewModel implements MainContract.ViewModel, OnMapReadyCallback
         return mSelectedRestaurant;
     }
 
-    public void setSelectedRestaurant(
-        ObservableField<Restaurant> selectedRestaurant) {
-        mSelectedRestaurant = selectedRestaurant;
-    }
-
     public void setSelectedRestaurant(Marker marker) {
-        int restaurantId = Integer.parseInt(marker.getSnippet().replace(MARKER_RESTAURANT, ""));
-        mSelectedRestaurant.set((Restaurant) marker.getTag());
-        mSelectedRestaurant.notifyChange();
-        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        mRestaurantDetailViewModel.setSelectedRestaurant((Restaurant) marker.getTag());
+        if (mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_HIDDEN) {
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        }
     }
 
     @Override
