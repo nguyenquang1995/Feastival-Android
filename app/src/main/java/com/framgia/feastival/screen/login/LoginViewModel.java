@@ -4,6 +4,7 @@ import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 
 import com.android.databinding.library.baseAdapters.BR;
+import com.framgia.feastival.data.source.model.LoginResponse;
 
 /**
  * Exposes the data to be used in the Login screen.
@@ -64,6 +65,8 @@ public class LoginViewModel extends BaseObservable implements LoginContract.View
 
     @Override
     public void onLoginClick() {
+        setLogin(true);
+        mPresenter.logIn(mAccount, mPassword);
     }
 
     @Override
@@ -72,5 +75,15 @@ public class LoginViewModel extends BaseObservable implements LoginContract.View
 
     @Override
     public void onForgotPassWordClick() {
+    }
+
+    @Override
+    public void onLoginSuccess(LoginResponse loginResponse) {
+        setLogin(false);
+    }
+
+    @Override
+    public void onLoginFail(String message) {
+        setLogin(false);
     }
 }

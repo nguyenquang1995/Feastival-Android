@@ -4,6 +4,8 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 
 import com.framgia.feastival.R;
+import com.framgia.feastival.data.source.LoginRepository;
+import com.framgia.feastival.data.source.remote.LoginRemoteDataSource;
 import com.framgia.feastival.databinding.ActivityLoginBinding;
 import com.framgia.feastival.screen.BaseActivity;
 
@@ -18,7 +20,7 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         mViewModel = new LoginViewModel();
         LoginContract.Presenter presenter =
-            new LoginPresenter(mViewModel);
+            new LoginPresenter(mViewModel, new LoginRepository(new LoginRemoteDataSource()));
         mViewModel.setPresenter(presenter);
         ActivityLoginBinding binding =
             DataBindingUtil.setContentView(this, R.layout.activity_login);
