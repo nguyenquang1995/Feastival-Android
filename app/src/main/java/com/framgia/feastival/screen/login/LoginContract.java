@@ -1,5 +1,6 @@
 package com.framgia.feastival.screen.login;
 
+import com.framgia.feastival.data.source.model.LoginResponse;
 import com.framgia.feastival.screen.BasePresenter;
 import com.framgia.feastival.screen.BaseViewModel;
 
@@ -14,11 +15,14 @@ interface LoginContract {
         void onLoginClick();
         void onRegisterClick();
         void onForgotPassWordClick();
+        void onLoginSuccess(LoginResponse loginResponse);
+        void onLoginFail(String message);
     }
 
     /**
      * Presenter.
      */
     interface Presenter extends BasePresenter {
+        void logIn(String email, String password);
     }
 }

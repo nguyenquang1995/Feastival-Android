@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by tmd on 13/05/2017.
  */
 public class ServiceGenerator {
-    public static final String BASE_URL = "http://192.168.1.87:3000/api/";
+    public static final String BASE_URL = "http://feastival-react.herokuapp.com/api/";
     private static Retrofit sRetrofit = null;
     private static Retrofit.Builder sRetrofitBuilder = new Retrofit.Builder()
         .baseUrl(BASE_URL)
