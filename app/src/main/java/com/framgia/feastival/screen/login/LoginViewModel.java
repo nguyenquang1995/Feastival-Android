@@ -1,10 +1,17 @@
 package com.framgia.feastival.screen.login;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 
 import com.android.databinding.library.baseAdapters.BR;
 import com.framgia.feastival.data.source.model.LoginResponse;
+import com.framgia.feastival.screen.chat.ChatActivity;
+
+import static android.content.Context.MODE_PRIVATE;
+import static com.framgia.feastival.data.Constant.SharePreference.PRE_NAME;
+import static com.framgia.feastival.data.Constant.SharePreference.PRE_TOKEN;
 
 /**
  * Exposes the data to be used in the Login screen.
@@ -14,8 +21,10 @@ public class LoginViewModel extends BaseObservable implements LoginContract.View
     private boolean mIsLogin;
     private String mAccount;
     private String mPassword;
+    private Activity mActivity;
 
-    public LoginViewModel() {
+    public LoginViewModel(Activity activity) {
+        mActivity = activity;
     }
 
     @Bindable
@@ -80,6 +89,10 @@ public class LoginViewModel extends BaseObservable implements LoginContract.View
     @Override
     public void onLoginSuccess(LoginResponse loginResponse) {
         setLogin(false);
+        mActivity.getSharedPreferences(
+            PRE_NAME, MODE_PRIVATE).edit()
+            .putString(PRE_TOKEN, loginResponse.getUserSession().getToken()).commit();
+        mActivity.startActivity(new Intent(mActivity, ChatActivity.class));
     }
 
     @Override

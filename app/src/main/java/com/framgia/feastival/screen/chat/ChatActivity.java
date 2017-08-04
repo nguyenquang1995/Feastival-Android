@@ -16,7 +16,7 @@ public class ChatActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mViewModel = new ChatViewModel();
+        mViewModel = new ChatViewModel(this);
         ChatContract.Presenter presenter =
             new ChatPresenter(mViewModel);
         mViewModel.setPresenter(presenter);

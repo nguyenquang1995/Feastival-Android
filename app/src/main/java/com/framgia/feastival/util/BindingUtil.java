@@ -1,7 +1,6 @@
 package com.framgia.feastival.util;
 
 import android.databinding.BindingAdapter;
-
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.framgia.feastival.R;
 import com.framgia.feastival.databinding.FrameGroupCreateBinding;
 import com.framgia.feastival.databinding.FrameRestaurantDetailBinding;
@@ -59,5 +59,10 @@ public class BindingUtil {
                 // TODO: 02/08/2017
                 break;
         }
+    }
+
+    @BindingAdapter("recyclerViewChatAdapter")
+    public static void setAdapter(RecyclerView recyclerView, FirebaseRecyclerAdapter adapter) {
+        recyclerView.setAdapter(adapter);
     }
 }

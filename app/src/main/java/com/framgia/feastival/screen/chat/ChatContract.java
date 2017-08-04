@@ -11,6 +11,7 @@ interface ChatContract {
      * View.
      */
     interface ViewModel extends BaseViewModel<Presenter> {
+        void onButtonSendClick();
     }
 
     /**

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "828758824476",
+    "firebase_url": "https://feastival-a5b8d.firebaseio.com",
+    "project_id": "feastival-a5b8d",
+    "storage_bucket": "feastival-a5b8d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:828758824476:android:52593e50bdf80e93",
+        "android_client_info": {
+          "package_name": "com.framgia.feastival"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "828758824476-jkturbrmlp4q53mdj1s66bre8fm9tgu3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAi-ii46C0vk0JZ9Be5czDgGPf9f37hn8A"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
